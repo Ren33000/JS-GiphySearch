@@ -3,7 +3,7 @@
 
 document.querySelector(".js-go").addEventListener('click', function(){
    var input = document.querySelector("input").value;
-    console.log(input);
+    // console.log(input);
     pushToDom(input);
 });
 
@@ -13,7 +13,7 @@ document.querySelector(".js-userinput").addEventListener('keyup', function(e){
     // alert("test");
     console.log(e);
    var input = document.querySelector("input").value;
-    console.log(input);
+    // console.log(input);
 
     if(e.which===13) {
         pushToDom(input);
@@ -31,11 +31,17 @@ GiphyAJAXCall.send();
 
 GiphyAJAXCall.addEventListener( 'load', function(e) {
     var data = e.target.response;
-    console.log(data);
+    // console.log(data);
+    pushToDom(data);
 })
 
 // Show me the GIFs
 function pushToDom(input) {
+    var response = JSON.parse(input);
+    
+    var imageURL = response.data[5].images.fixed_height.url;
+    console.log(imageURL);
+
     var container = document.querySelector(".js-container");
-    container.innerHTML = input;
+    container.innerHTML = "<img src=\"" + imageURL + "\">";
 }
