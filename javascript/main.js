@@ -1,51 +1,64 @@
-// Grab the input
-
-
+// Grabbing the input
 document.querySelector(".js-go").addEventListener('click', function(){
-   var input = document.querySelector("input").value;
+   var inputValue = document.querySelector('.js-userinput').value;
     // console.log(input);
-    pushToDom(input);
+    var userInput = getUserInput();
+    searchGiphy(userInput);
+    // pushToDom(input);
 });
 
 
 document.querySelector(".js-userinput").addEventListener('keyup', function(e){
-    
-    // alert("test");
-    console.log(e);
-   var input = document.querySelector("input").value;
-    // console.log(input);
-
     if(e.which===13) {
-        pushToDom(input);
+        var userInput = getUserInput();
+        searchGiphy(userInput);
+        // pushToDom(input);
     }
 });
 
+function getUserInput() {
+    var inputValue = document.querySelector('.js-userinput').value;
+    return inputValue;
+}
+
+
 // Do the data stuff with the API
+function searchGiphy(input) {
+    var url = `http://api.giphy.com/v1/gifs/search?q=${input}&api_key=5WHGVBiL6dgD2R7ebfAOkMC0nE08dlk6` ;
+    
+    // Ajax request
+    var GiphyAJAXCall = new XMLHttpRequest();
+    GiphyAJAXCall.open( 'GET', url);
+    GiphyAJAXCall.send();
+    
+    GiphyAJAXCall.addEventListener( 'load', function(e) {
+        var data = e.target.response;
+        // console.log(data);
+        pushToDom(data);
+    })
+};
 
-var url = "http://api.giphy.com/v1/gifs/search?q=brooklyn+99&api_key=5WHGVBiL6dgD2R7ebfAOkMC0nE08dlk6"
 
-// Ajax request
-var GiphyAJAXCall = new XMLHttpRequest();
-GiphyAJAXCall.open( 'GET', url);
-GiphyAJAXCall.send();
-
-GiphyAJAXCall.addEventListener( 'load', function(e) {
-    var data = e.target.response;
-    // console.log(data);
-    pushToDom(data);
-})
-
-// Show me the GIFs
+// Showing GIFs
 function pushToDom(input) {
     var response = JSON.parse(input);
+    var container = document.querySelector(".js-container");
+    var result = document.querySelector(".results");
+
+    clear(container);
+    clear(result);
+    
     
     var imageURLs = response.data;
     // console.log(imageURLs);
 
-    imageURLs.forEach(function (image) {
+    imageURLs.forEach(function(image) {
         var src = image.images.fixed_height.url;
-        var container = document.querySelector(".js-container");
+        result.innerHTML = src.length + " GIFs found "
         container.innerHTML+=  "<img src=\"" + src + "\" class= \"container-image\">";
     });
 
+    function clear(item){
+        item.innerHTML = "";
+    }
 }
